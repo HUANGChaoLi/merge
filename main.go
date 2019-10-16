@@ -206,7 +206,6 @@ func (mt *MergeTask) Start() {
 
 				iBufOffset := inputBufsOffset[rt]
 				iData := binary.BigEndian.Uint64(iBuf[iBufOffset : iBufOffset+typeBytesLen])
-				//fmt.Println(rt, iData)
 
 				if consumedRt == nil || currentData > iData {
 					consumedRt = rt
@@ -218,7 +217,6 @@ func (mt *MergeTask) Start() {
 				// 这段代码不会执行
 				log.Fatal("consumedRt: unknown err")
 			}
-			//fmt.Println(currentData)
 
 			outputBufOffset += typeBytesLen
 			inputBufsOffset[consumedRt] += typeBytesLen
@@ -346,7 +344,7 @@ func StartMerge(metadata *Metadata, inputFile *os.File, outputFile *os.File) *Me
 
 		return &Metadata{Size: 1, Blocks: []int64{iOffset}}
 
-		// 需要多次任务完成
+	// 需要多次任务完成
 	} else {
 		// 一个核心最多使用的读 Channel 数目
 		readTaskNum := (maxMemSize / coreNum - outputBufSize * (outputCSize + 1)) / (inputBufSize * (inputCSize + 1))
@@ -362,7 +360,7 @@ func StartMerge(metadata *Metadata, inputFile *os.File, outputFile *os.File) *Me
 		newBlocks := make([]int64, mergeTaskNum)
 		mergeTasks := make([]*MergeTask, mergeTaskNum)
 
-		// 当前读取 Block 索引
+		// 当前读取 Block 下标
 		currentBlockIdx := 0
 		var iOffset int64 = 0
 		for idx, _ := range mergeTasks {
