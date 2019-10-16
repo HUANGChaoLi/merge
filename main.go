@@ -266,7 +266,7 @@ func NewParallelMergeTask() *ParallelMergeTask {
 
 func (gmt *ParallelMergeTask) Start() chan<- *MergeTask {
 	go func() {
-		// 限制最大可以用时执行 核心数 个任务
+		// 限制最大可同时执行"核心数"个任务
 		poolC := make(chan struct{}, coreNum)
 		for i := 0; i < coreNum; i++ {
 			poolC <- struct{}{}
