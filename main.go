@@ -330,7 +330,7 @@ func (md *Metadata) TotalBlocksSize() (result int64) {
 func StartMerge(metadata *Metadata, inputFile *os.File, outputFile *os.File) *Metadata {
 	blockSize := int(metadata.Size)
 	// 当前合并任务所预计使用的内存量：输入Channel数量 * 一个输入Channel使用的内存 + 输出Channel使用的内存
-	predictOneMergeMem := metadata.Size*inputBufSize*(inputCSize+1) + outputBufSize*(outputCSize+1)
+	predictOneMergeMem := metadata.Size * inputBufSize * (inputCSize + 1) + outputBufSize * (outputCSize + 1)
 
 	// 刚好一次任务可以完成
 	if predictOneMergeMem <= maxMemSize {
@@ -349,10 +349,13 @@ func StartMerge(metadata *Metadata, inputFile *os.File, outputFile *os.File) *Me
 		// 需要多次任务完成
 	} else {
 		// 一个核心最多使用的读 Channel 数目
-		readTaskNum := (maxMemSize/coreNum - outputBufSize) / inputBufSize
+		readTaskNum := (maxMemSize / coreNum - outputBufSize * (outputCSize + 1)) / (inputBufSize * (inputCSize + 1))
+		if readTaskNum <= 1 {
+			log.Fatal("可用内存过少")
+		}
 
 		mergeTaskNum := blockSize / readTaskNum
-		if blockSize%readTaskNum != 0 {
+		if blockSize % readTaskNum != 0 {
 			mergeTaskNum++
 		}
 
