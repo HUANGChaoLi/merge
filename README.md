@@ -18,3 +18,6 @@
 4. 内存合并任务并行执行器：ParallelMergeTask 类
 5. 一轮完整的合并任务函数：StartMerge 函数
 6. 文件元数据：Metadata 类
+
+## 图示
+![图示](./main.png)
